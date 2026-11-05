@@ -10,8 +10,7 @@ Eda is a friendly chatbot robot. For now it is text in the Terminal, so no hardw
 4. [Concepts and reminders](#4-concepts-and-reminders)
 5. [Experiment: temperature and seed](#5-experiment-temperature-and-seed)
 6. [Experiment: system prompt personas](#6-experiment-system-prompt-personas)
-7. [Troubleshooting](#7-troubleshooting)
-8. [Ideas to play with next](#8-ideas-to-play-with-next)
+7. [Ideas to play with next](#88-ideas-to-play-with-next)
 
 ---
 
@@ -32,7 +31,7 @@ If you do not activate the environment, call Python directly: `.eda/bin/python e
 
 | Type | What happens |
 | --- | --- |
-| `/face angry` | Tells Eda what the visitor's face looks like (any word works: `happy`, `sad`, ...). The note `[Perception: the visitor's face looks angry.]` is put in front of your next message. No model call is made for the command itself. |
+| `/face angry` | Tells Eda what the visitor's face looks like (any word works: `happy`, `sad`, ...). The note `[Perception: the visitor's face looks angry.]` is put in front of your next message. No model call is made for the command itself. Details: [docs/face_command.md](docs/face_command.md). |
 | `quit` or `exit` | Leaves the chat (Ctrl+C also works). |
 
 ### Check the code without running the chatbot
