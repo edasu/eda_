@@ -65,6 +65,22 @@ def main():
             print("Eda: Goodbye!")
             break
 
+                # Commands are handled here and never reach the model.
+        if user_text.lower().startswith("/face"):
+            emotion = user_text[len("/face"):].strip().lower()
+            if not emotion:
+                print("Eda: Tell me which face, for example: /face angry\n")
+                continue
+            perception_note = f"[Perception: the visitor's face looks {emotion}.]"
+            print(f"Eda: (I see that you look {emotion}.)\n")
+            continue
+
+        # The note applies to one message only. It stays in the history, so
+        # the model still sees it on later turns.
+        if perception_note:
+            user_text = f"{perception_note}\n{user_text}"
+            perception_note = None
+
         messages.append({"role": "user", "content": user_text})
 
         # The full history goes to the model on every call.
