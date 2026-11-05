@@ -158,7 +158,7 @@ def chat(messages, temperature=0.7, seed=None, schema=None, tools=None,
 #   system   optional string: who the model is and how to behave (default None)
 #   **kwargs any extra settings, passed straight on to chat() (e.g. temperature=0)
 # Returns: the answer as a plain string (not the whole response object).
-def ask(prompt, system=None, **kwargs):
+def talk(prompt, system=None, **kwargs):
     """One question, one answer (a string). Optional system prompt."""
     messages = []
     if system:
@@ -179,7 +179,7 @@ def ask(prompt, system=None, **kwargs):
 #   retries  how many extra tries if the JSON is broken (default 2)
 #   **kwargs extra settings passed on to chat()
 # Returns: a Python dict. Raises ValueError if every try fails.
-def ask_json(prompt, schema, system=None, retries=2, **kwargs):
+def talk_json(prompt, schema, system=None, retries=2, **kwargs):
     """Ask for an answer as JSON that matches `schema`. Returns a Python dict.
 
     Even with a schema, small models sometimes produce broken JSON, so
