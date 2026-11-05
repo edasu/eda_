@@ -9,8 +9,9 @@ Eda is a friendly chatbot robot. For now it is text in the Terminal, so no hardw
 3. [How the pieces talk to each other](#3-how-the-pieces-talk-to-each-other)
 4. [Concepts and reminders](#4-concepts-and-reminders)
 5. [Experiment: temperature and seed](#5-experiment-temperature-and-seed)
-6. [Troubleshooting](#6-troubleshooting)
-7. [Ideas to play with next](#7-ideas-to-play-with-next)
+6. [Experiment: system prompt personas](#6-experiment-system-prompt-personas)
+7. [Troubleshooting](#7-troubleshooting)
+8. [Ideas to play with next](#8-ideas-to-play-with-next)
 
 ---
 
@@ -26,6 +27,22 @@ python temperature_test.py   # see what temperature and seed do
 ```
 
 If you do not activate the environment, call Python directly: `.eda/bin/python eda.py`. The system `python3` does not have the `ollama` package.
+
+### Commands inside the chat
+
+| Type | What happens |
+| --- | --- |
+| `/face angry` | Tells Eda what the visitor's face looks like (any word works: `happy`, `sad`, ...). The note `[Perception: the visitor's face looks angry.]` is put in front of your next message. No model call is made for the command itself. |
+| `quit` or `exit` | Leaves the chat (Ctrl+C also works). |
+
+### Check the code without running the chatbot
+
+Run this from the project folder (keep the quotes, the folder name contains spaces). It parses `eda.py` without starting it, and prints `syntax ok` if there is no typo such as a missing bracket:
+
+```bash
+cd "/Users/suedaciftci/Documents/Education and books/PHD/code /eda_"
+.eda/bin/python -c "import ast; ast.parse(open('eda.py').read()); print('syntax ok')"
+```
 
 ---
 
@@ -102,5 +119,11 @@ Result of `temperature_test.py` with the question "Suggest a game for a friendly
 | temperature 0.7, seed 42 | 5 identical answers ("Star Trek: Voyager ..."), different from the line above |
 
 Your own run will differ for the settings without a seed. The comments inside `temperature_test.py` explain every line.
+
+## 6. Experiment: system prompt personas
+
+The system prompt (`SYSTEM` in `eda.py`) tells the model who Eda is. Changing only this text, to a pirate or a strict teacher, changed the tone of every answer, mostly kept the facts, but sometimes lowered accuracy and bent the "say so if you do not know" rule. The original prompt is kept as a comment in `eda.py`.
+
+Full setup, results table and caveats: [docs/persona_experiment.md](docs/persona_experiment.md).
 
 ---

@@ -1,26 +1,55 @@
 """
-eda.py — Eda, a simple chatbot that is talked to in the Terminal.
+eda.py — Eda, a chatbot you talk to in the terminal.
 
-The program is started with:   python eda.py
-It is stopped by typing:       quit  (or by pressing Ctrl+C)
+Run:   .eda/bin/python eda.py
+Quit:  type "quit" (or press Ctrl+C)
+
+In-chat command:
+    /face <emotion>   tell Eda what the visitor's face looks like (e.g. /face angry)
 """
 import llm
 
-# The system prompt: it is defined here who Eda is and how she must behave.
-# It is never seen by the visitor.
-SYSTEM = (
-    "You are Eda, a friendly robot that talks with visitors. "
-    "Answer in one to two short sentences. Be kind and clear. "
-    "If you do not know something, say so instead of guessing."
-)
+# The system prompt defines who Eda is and how she answers. The visitor never
+# sees it, but the model reads it first on every call.
+# Persona comparison and results: docs/persona_experiment.md
+PERSONAS = {
+    "original": (
+        "You are Eda, a friendly robot that talks with visitors. "
+        "Answer in one to two short sentences. Be kind and clear. "
+        "If you do not know something, say so instead of guessing."
+    ),
+    "pirate": (
+        "You are Captain Eda, a pirate robot. Talk like a pirate. "
+        "Answer in one to two short sentences. "
+        "If you do not know something, say so instead of guessing."
+    ),
+    "teacher": (
+        "You are Eda, a strict teacher. Be stern, demanding and precise, "
+        "and correct sloppy questions. Answer in one to two short sentences. "
+        "If you do not know something, say so instead of guessing."
+    ),
+}
+SYSTEM = PERSONAS["pirate"]  # switch persona by changing this key
 
 
 def main():
-    # Nothing is remembered by the model between calls, so the whole
-    # conversation is kept in this list and is sent again every time.
+    # The model is stateless: it remembers nothing between calls. The "memory"
+    # is this list, which is re-sent in full on every call.
+    #
+    # Each message has a role:
+    #   system     instructions on who the model is and how to behave
+    #   user       what the person said
+    #   assistant  what the model said earlier
+    #   tool       the result of a function the model asked us to run
     messages = [{"role": "system", "content": SYSTEM}]
 
-    print("Eda: Hello! I am Eda. how can I help you today? if you want to leave, type 'quit'.\n")
+    print("Eda: Hello! I am Eda the captain. how can I help you today? if you want to leave, type 'quit'.")
+    print("     (Tip: '/face angry' tells Eda what the visitor's face looks like.)\n")
+
+    # What the robot "sees". Held here until the next message, then prepended
+    # to it. It is not sent as a second system message because some models
+    # accept only one system message, at the very start.
+    perception_note = None
 
     while True:
         try:
@@ -30,26 +59,20 @@ def main():
             break
 
         if not user_text:
-            # A message is shown to the user, then the question is asked again.
             print("Eda: I did not catch that. Please type something.\n")
             continue
         if user_text.lower() in ("quit", "exit"):
             print("Eda: Goodbye!")
             break
 
-        # 1. What was visitor is added to the history.
-        #    Four roles can be given to a message:
-        #      "system"    = the instructions about who the model is and how it must behave
-        #      "user"      = what was said by the person
-        #      "assistant" = what was said earlier by the model
-        #      "tool"      = the result of a tool (function) that was called on request of the model
         messages.append({"role": "user", "content": user_text})
 
-        # 2. The whole history is sent to the model.
+        # The full history goes to the model on every call.
+        # temperature 0.7: some randomness in the wording (see temperature_test.py).
         response = llm.chat(messages, temperature=0.7)
         answer = response.message.content
 
-        # 3. Eda's answer is added to the history, so that it can be "remembered" in the next turn.
+        # Store the reply too, otherwise the model would not "remember" it next turn.
         messages.append({"role": "assistant", "content": answer})
 
         print(f"Eda: {answer}\n")
