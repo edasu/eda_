@@ -1,0 +1,17 @@
+# Python
+__pycache__/ 
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Logs of model calls (can contain private conversations)
+logs/
+
+# Environment files and secrets
+.env
+
+# macOS / editors
+.DS_Store
+.vscode/
+.idea/
